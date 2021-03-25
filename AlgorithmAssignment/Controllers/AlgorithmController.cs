@@ -19,37 +19,35 @@ namespace AlgorithmAssignment.Controllers
         public bool Algo1(string request)
         {
             int[] array = request.Select(digit => int.Parse(digit.ToString())).ToArray();
-
             if (CheckIfConsecutive(array))
             {
                 return true;
             }
             else
             {
-                for (int i = 1; i < array.Length - 1; i++)
+                int n = 0;
+                if (array.Length % 2 != 0)
                 {
-                    if (i == 1)
+                    n = Convert.ToInt32(Math.Round((double)array.Length / 2));
+                }
+                else
+                {
+                    n = Convert.ToInt32(Math.Round((double)array.Length+1 / 2));
+                }
+                for (int i = 2; i < n; i++)
+                {
+                    int[] groupArray = GroupIntegers(array, i);
+                    if (CheckIfConsecutive(groupArray))
                     {
-                        if (CheckIfConsecutive(array))
-                        {
-                            return true;
-                        }
-                    }
-                    else
-                    {
-                        //groupIntegers(array, i);
                         return true;
                     }
                 }
                 return false;
-            }             
+            }
         }
 
-        //private int[] groupIntegers(int[] array,int n)
-        //{
-        //    string[] numbers = array.Take(n).Select(i => i.ToString()).ToArray();
-        //}
         
+
         [HttpPost]
         public string Algo2(string request)
         {
@@ -84,7 +82,7 @@ namespace AlgorithmAssignment.Controllers
                 return CheckIfConsecutive(array);
             }
         }
-
+        //Common function to check if the integers of an array are consecutive
         private bool CheckIfConsecutive(int[] array)
         {
             for (int i = 0; i < array.Length - 1; i++)
@@ -95,6 +93,18 @@ namespace AlgorithmAssignment.Controllers
                 }
             }
             return true;
+        }
+        //Grouping integers with 'n' specifying the number of integers in a group as one integer.
+        private int[] GroupIntegers(int[] array, int n)
+        {
+            //int[] result = new int[] { };
+            List<int> result = new List<int>();
+            for (int i = 0; i < array.Length; i += n)
+            {
+                var k = String.Join("", array.Skip(i).Take(n).ToList());
+                result.Add(int.Parse(k));
+            }
+            return result.ToArray();
         }
     }
 }
